@@ -1,11 +1,12 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link'
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import { Modal } from 'bootstrap';
 import Image from 'next/image';
 import useFormValidation from '@/hooks/useValidateForm';
+import { Modal as ModalInstance } from 'bootstrap';
 
 const RegisterPage: React.FC = () => {
   const { register } = useUser();
@@ -16,20 +17,41 @@ const RegisterPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter()
   const { validationErrors, validateForm } = useFormValidation({ username, email, password, role }, true);
+  const [modalInitializer, setModalInitializer] = useState<((element: HTMLElement) => ModalInstance) | null>(null);
 
-  const showSuccessModal = () => {
-    if (typeof window !== 'undefined') {
-      const element = document.getElementById('successModal') as HTMLElement
-      const successModal = new Modal(element)
-      successModal.show()
+  useEffect(() => {
+    import('bootstrap').then(bootstrap => {
+      setModalInitializer(() => (element: HTMLElement) => new bootstrap.Modal(element) as ModalInstance);
+    });
+  }, []);
 
-      setTimeout(() => {
-        successModal.hide()
-        router.push('/login')
-      }, 1500)
+  // const showSuccessModal = () => {
+  //   if (typeof window !== 'undefined') {
+  //     const element = document.getElementById('successModal') as HTMLElement
+  //     const successModal = new Modal(element)
+  //     successModal.show()
+
+  //     setTimeout(() => {
+  //       successModal.hide()
+  //       router.push('/login')
+  //     }, 1500)
+  //   }
+  // }
+
+  const showSuccessModal = useCallback(() => {
+    if (modalInitializer) {
+      const element = document.getElementById('successModal');
+      if (element) {
+        const successModal = modalInitializer(element);
+        successModal.show();
+
+        setTimeout(() => {
+          successModal.hide();
+          router.push('/login');
+        }, 1500);
+      }
     }
-  }
-
+  }, [modalInitializer, router]);
 
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

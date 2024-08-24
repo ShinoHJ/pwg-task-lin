@@ -1,6 +1,8 @@
-'use client';
+
 import "@/styles/globals.scss";
-import ActiveModal from "@/components/ActiveModal";
+import dynamic from 'next/dynamic';
+
+const ActiveModal = dynamic(() => import("@/components/ActiveModal"), { ssr: false });
 
 const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 

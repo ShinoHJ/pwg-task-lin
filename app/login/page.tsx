@@ -1,11 +1,11 @@
 'use client'
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
-import { Modal } from 'bootstrap';
 import Image from 'next/image';
 import useFormValidation from '@/hooks/useValidateForm';
+import { Modal as ModalInstance } from 'bootstrap';
 
 const LoginPage: React.FC = () => {
   const { login } = useUser();
@@ -14,6 +14,13 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter()
   const { validationErrors, validateForm } = useFormValidation({ email, password }, false);
+  const [modalInitializer, setModalInitializer] = useState<((element: HTMLElement) => ModalInstance) | null>(null);
+
+  useEffect(() => {
+    import('bootstrap').then(bootstrap => {
+      setModalInitializer(() => (element: HTMLElement) => new bootstrap.Modal(element) as ModalInstance);
+    });
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,18 +32,22 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(email, password);
-      const element = document.getElementById('successModal') as HTMLElement;
-      const successModal = new Modal(element);
-      successModal.show()
-      setTimeout(() => {
-        successModal.hide()
-        router.push('/post-list')
-      }, 1500)
+      if (modalInitializer) {
+        const element = document.getElementById('successModal') as HTMLElement;
+        const successModal = modalInitializer(element);
+        successModal.show()
+        setTimeout(() => {
+          successModal.hide()
+          router.push('/post-list')
+        }, 1500)
+      }
     } catch (error) {
       setError('Login failed. Please check your credentials.');
-      const element = document.getElementById('errorModal') as HTMLElement;
-      const errerModal = new Modal(element);
-      errerModal.show()
+      const element = document.getElementById('errorModal');
+      if (element && modalInitializer) {
+        const modal = modalInitializer(element);
+        modal.show();
+      }
     }
   };
 
@@ -92,7 +103,6 @@ const LoginPage: React.FC = () => {
             <div className="modal-body d-flex flex-column align-items-center">
               <Image alt='' src='/invalidIcon.svg' width={40} height={40} className='m-4' />
               <p className='w-100 text-center mb-4'>Invalid credentials</p>
-
               <button type="button" className="btn btn-yellow01 rounded-pill mb-4 px-5" data-bs-dismiss="modal">Ok</button>
             </div>
           </div>

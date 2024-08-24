@@ -114,3 +114,8 @@ export interface DecodedToken {
   role: 'admin' | 'user';
   exp: number;
 }
+
+export interface ModalInstance {
+  show: () => void;
+  hide: () => void;
+}

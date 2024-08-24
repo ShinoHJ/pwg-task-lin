@@ -6,10 +6,11 @@ import DeleteModal from '@/components/DeleteModal'
 import { useRouter } from 'next/navigation';
 import { usePosts } from '@/hooks/usePost';
 import Pagination from '@/components/Pagination';
-import { Post,ModalState,DelModalState,PostProps } from '@/type';
+import { Post, ModalState, DelModalState } from '@/type';
 import Dashboard from '@/components/Dashboard';
+import { useAuth } from '@/hooks/useAuth'
 
-const PostList: React.FC<PostProps> = ({post}) => {
+const PostList: React.FC<Post> = ({ }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const { posts, fetchPostsBasedOnRole, removePost, totalPages } = usePosts()
@@ -22,11 +23,12 @@ const PostList: React.FC<PostProps> = ({post}) => {
     showModal: false,
     postId: 0,
   });
-  const token = localStorage.getItem('token') || '';
+  // const token = localStorage.getItem('token') || '';
+  const { token, isAdmin } = useAuth()
 
   useEffect(() => {
-    const adminToken = localStorage.getItem('token') || '';
-    if (adminToken) {
+    // const adminToken = localStorage.getItem('token') || '';
+    if (isAdmin && token) {
       fetchPostsBasedOnRole(token, currentPage, 10);
     }
   }, [currentPage]);
@@ -79,11 +81,11 @@ const PostList: React.FC<PostProps> = ({post}) => {
   };
 
   const handleDeleteSuccess = async () => {
-    await fetchPostsBasedOnRole(token, currentPage, 10);
+    if(token) await fetchPostsBasedOnRole(token, currentPage, 10);
   };
 
   const handleSavePost = async () => {
-    await fetchPostsBasedOnRole(token, currentPage, 10);
+    if(token)  await fetchPostsBasedOnRole(token, currentPage, 10);
     handleCloseModal();
   };
 
@@ -93,8 +95,8 @@ const PostList: React.FC<PostProps> = ({post}) => {
       <div className="container d-flex flex-column justify-content-top align-items-center vh-100">
         <h2 className='formTitle mt-4'>Post List</h2>
 
-        <Dashboard adminToken={token} userToken={token} />
-
+        {isAdmin && token && <Dashboard adminToken={token} userToken={token} />
+        }
         <div className="row w-100">
           {posts.map(post => (
             <div className="col-12 col-md-6 col-lg-4 mb-4" key={post.id}>

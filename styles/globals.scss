@@ -50,11 +50,12 @@ textarea {
 }
 
 .formArea {
-  width: 500px;
+  width: 450px;
   max-width: 100%;
   background: var(--bs-white);
-  padding: 50px 85px;
+  padding: 50px 55px;
   border-radius: var(--bs-border-radius);
+  margin: 0 auto;
 }
 
 .formTitle {

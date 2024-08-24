@@ -1,8 +1,10 @@
+'use client';
 import React, { useRef, useEffect, useState } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
 import { Post, PostModalProps } from '@/type';
 import { useAuth } from '@/hooks/useAuth'
+import { Modal as ModalInstance } from 'bootstrap';
 
 const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVisible }) => {
   const { addPost, updatePost } = usePosts();
@@ -17,24 +19,34 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
     "history", "american", "crime", "science", "fiction", "fantasy", "space",
     "adventure", "nature", "environment", "philosophy", "psychology", "health"
   ]);
+  const [modalInitializer, setModalInitializer] = useState<typeof import('bootstrap').Modal | null>(null);
+  const modalInstanceRef = useRef<ModalInstance | null>(null);
 
   useEffect(() => {
-    const modalElement = document.getElementById('articleModal');
-    if (modalElement) {
-      let modalInstance = Modal.getInstance(modalElement);
-      if (!modalInstance) {
-        modalInstance = new Modal(modalElement, {
-          backdrop: 'static',
-          keyboard: false
-        });
-      }
-      if (isVisible) {
-        modalInstance.show();
-      } else {
-        modalInstance.hide();
+    import('bootstrap').then(bootstrap => {
+      setModalInitializer(() => bootstrap.Modal);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (modalInitializer) {
+      const modalElement = document.getElementById('articleModal');
+      if (modalElement) {
+        if (!modalInstanceRef.current) {
+          modalInstanceRef.current = new modalInitializer(modalElement, {
+            backdrop: 'static',
+            keyboard: false
+          });
+        }
+        if (isVisible) {
+          modalInstanceRef.current.show();
+        } else {
+          modalInstanceRef.current.hide();
+        }
       }
     }
-  }, [isVisible]);
+  }, [isVisible, modalInitializer]);
+
 
   useEffect(() => {
     if (inputRef.current && tagsContainerRef.current) {
@@ -142,7 +154,7 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
                   <textarea className={`form-control ${validationErrors.body ? 'is-invalid' : ''}`} id="exampleInputContent" rows={4}
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
-                    aria-describedby="contentHelp">{body}</textarea>
+                    aria-describedby="contentHelp" />
                   {validationErrors.body && (
                     <div className="invalid-feedback">{validationErrors.body}</div>
                   )}

@@ -1,25 +1,36 @@
-import React, { useEffect, useState } from 'react';
+'use client';
+import React, { useEffect, useState, useRef } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
-import { Post,DeleteModalProps } from '@/type';
+import { Post, DeleteModalProps } from '@/type';
+import { Modal as ModalInstance } from 'bootstrap';
 
 const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, onDeleteSuccess }) => {
   const { removePost } = usePosts();
+  const [modalInitializer, setModalInitializer] = useState<typeof import('bootstrap').Modal | null>(null);
+  const modalInstanceRef = useRef<ModalInstance | null>(null);
 
   useEffect(() => {
-    const modalElement = document.getElementById('confirmDelModal');
-    if (modalElement) {
-      let modalInstance = Modal.getInstance(modalElement);
-      if (!modalInstance) {
-        modalInstance = new Modal(modalElement, {
-          backdrop: 'static',
-          keyboard: false
-        });
-      }
-      if (isVisible) {
-        modalInstance.show();
-      } else {
-        modalInstance.hide();
+    import('bootstrap').then(bootstrap => {
+      setModalInitializer(() => bootstrap.Modal);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (modalInitializer) {
+      const modalElement = document.getElementById('confirmDelModal');
+      if (modalElement) {
+        if (!modalInstanceRef.current) {
+          modalInstanceRef.current = new modalInitializer(modalElement, {
+            backdrop: 'static',
+            keyboard: false
+          });
+        }
+        if (isVisible) {
+          modalInstanceRef.current.show();
+        } else {
+          modalInstanceRef.current.hide();
+        }
       }
     }
   }, [isVisible]);
