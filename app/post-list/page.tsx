@@ -6,25 +6,8 @@ import DeleteModal from '@/components/DeleteModal'
 import { useRouter } from 'next/navigation';
 import { usePosts } from '@/hooks/usePost';
 import Pagination from '@/components/Pagination';
-import { Post } from '@/type';
+import { Post,ModalState,DelModalState,PostProps } from '@/type';
 import Dashboard from '@/components/Dashboard';
-
-type ModalMode = 'add' | 'edit';
-
-interface ModalState {
-  mode: ModalMode;
-  showModal: boolean;
-  editingPost: Post | null | '';
-}
-
-interface DelModalState {
-  showModal: boolean;
-  postId: number;
-}
-
-interface PostProps {
-  post: Post;
-}
 
 const PostList: React.FC<PostProps> = ({post}) => {
   const router = useRouter();
@@ -100,7 +83,7 @@ const PostList: React.FC<PostProps> = ({post}) => {
   };
 
   const handleSavePost = async () => {
-    await fetchPostsBasedOnRole(localStorage.getItem('token') || '', currentPage, 10);
+    await fetchPostsBasedOnRole(token, currentPage, 10);
     handleCloseModal();
   };
 

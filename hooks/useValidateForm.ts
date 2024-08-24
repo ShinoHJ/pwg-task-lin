@@ -1,11 +1,5 @@
 import { useState } from 'react';
-
-interface ValidationErrors {
-  username?: string;
-  email?: string;
-  password?: string;
-  role?: string;
-}
+import { ValidationErrors } from '@/type'
 
 const useFormValidation = (
   fields: { username?: string; email: string; password: string; role?: string },

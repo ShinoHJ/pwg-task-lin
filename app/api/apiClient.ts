@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-
+import { Account, AccountsResponse, PostData, PostResponse, PaginatedResponse, LoginRequest, RegisterRequest } from '@/type/api'
 const API_BASE_URL = 'https://api-for-testing-gujp.onrender.com/';
 
 const apiClient = axios.create({
@@ -8,50 +8,6 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-interface Account {
-  userId: number;
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-}
-
-interface AccountsResponse {
-  accounts: Account[];
-}
-
-interface PostData {
-  title: string;
-  body: string;
-  tags: string[];
-}
-
-export interface PostResponse {
-  date: string;
-  id: number;
-  title: string;
-  body: string;
-  tags: string[];
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  totalPages: number;
-  totalPosts: number;
-}
-
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-interface RegisterRequest {
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-}
 
 // Account API calls
 export const registerUser = async (userData: { username: string; email: string; password: string; role: string }): Promise<any> => {

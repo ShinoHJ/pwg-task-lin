@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
-import { Post } from '@/type';
-
-interface DeleteModalProps {
-  postId: number;
-  isVisible: boolean;
-  onClose: () => void;
-  onDeleteSuccess: () => void;
-}
+import { Post,DeleteModalProps } from '@/type';
 
 const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, onDeleteSuccess }) => {
   const { removePost } = usePosts();

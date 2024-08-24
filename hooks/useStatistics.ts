@@ -1,11 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAllAccounts, getAllPostsCount, getUserPostsCount } from '@/app/api/apiClient';
-
-interface Statistics {
-  totalAccounts: number;
-  totalPosts: number;
-  userPosts: number;
-}
+import { Statistics } from '@/type'
 
 export const useStatistics = (adminToken: string, userToken: string) => {
   const [statistics, setStatistics] = useState<Statistics>({
@@ -19,7 +14,7 @@ export const useStatistics = (adminToken: string, userToken: string) => {
   const fetchStatistics = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       const [accountsResponse, totalPosts, userPosts] = await Promise.all([
         getAllAccounts(adminToken),
         getAllPostsCount(adminToken),

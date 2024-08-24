@@ -1,20 +1,6 @@
 import { useState } from 'react';
 import { registerUser, loginUser } from '@/app/api/apiClient';
-
-interface User {
-  username: string;
-  email: string;
-  token?: string;
-  message?: string;
-  userId?: number;
-  password?: string;
-  role?: string;
-}
-
-interface UserProps {
-  fetchAllAccounts: (adminToken: string) => Promise<number>;
-  totalAccounts: number;
-}
+import { User, UserProps } from '@/type'
 
 export const useUser = () => {
   const [user, setUser] = useState<User | null>(null);

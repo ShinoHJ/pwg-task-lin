@@ -3,12 +3,8 @@ import React from 'react'
 import { useUser } from '@/hooks/useUser';
 import { usePosts } from '@/hooks/usePost';
 import { useEffect } from 'react';
+import { ToolbarProps } from '@/type'
 
-interface ToolbarProps {
-  showAddPostButton?: boolean
-  showGoBackButton?: boolean
-  onAdd?: () => void;
-}
 const Toolbar: React.FC<ToolbarProps> = ({ showAddPostButton, showGoBackButton, onAdd }) => {
   const router = useRouter();
   const { logout } = useUser()

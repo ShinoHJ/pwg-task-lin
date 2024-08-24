@@ -1,16 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
-import { Post } from '@/type';
+import { Post, PostModalProps } from '@/type';
 import { useAuth } from '@/hooks/useAuth'
-
-interface PostModalProps {
-  mode: 'add' | 'edit';
-  post?: Post | null | '';
-  onSave: (post: { title: string; body: string; tags: string[] }) => void;
-  onClose: () => void;
-  isVisible: boolean;
-}
 
 const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVisible }) => {
   const { addPost, updatePost } = usePosts();

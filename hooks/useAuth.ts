@@ -1,17 +1,11 @@
 import { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
-
-interface DecodedToken {
-  userId: string;
-  username: string;
-  role: 'admin' | 'user';
-  exp: number;
-}
+import { DecodedToken } from '@/type'
 
 export const useAuth = () => {
   const [user, setUser] = useState<DecodedToken | null>(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState<string | null>(null); 
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');

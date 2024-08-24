@@ -1,30 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getAllPosts, getUserPosts, createPost, editPost, deletePost, viewPost, PostResponse, PaginatedResponse } from '@/app/api/apiClient';
+import { getAllPosts, getUserPosts, createPost, editPost, deletePost, viewPost } from '@/app/api/apiClient';
 import { useAuth } from '@/hooks/useAuth';
-import { Post } from '@/type';
-
-interface PostData {
-  title: string;
-  body: string;
-  tags: string[];
-}
-
-// interface Post {
-//   id: number;
-//   title: string;
-//   body: string;
-//   tags: string[];
-// }
-
-interface PostsContextProps {
-  posts: Post[];
-  addPost: (userToken: string, postData: PostData) => Promise<void>;
-  updatePost: (userToken: string, postId: number, postData: PostData) => Promise<void>;
-  removePost: (userToken: string, postId: number) => Promise<void>;
-  getPost: (userToken: string, postId: number) => Promise<Post | null>;
-  totalPages: number;
-  fetchPostsBasedOnRole: (token: string, page: number, limit: number) => Promise<void>;
-}
+import { Post, PostData, PostsContextProps } from '@/type';
+import { PostResponse, PaginatedResponse } from '@/type/api';
 
 export const usePosts = (): PostsContextProps => {
   const [posts, setPosts] = useState<Post[]>([]);

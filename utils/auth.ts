@@ -1,11 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-
-interface DecodedToken {
-  userId: string;
-  username: string;
-  role: 'admin' | 'user';
-  exp: number;
-}
+import { DecodedToken } from '@/type'
 
 export const decodeToken = (token: string): DecodedToken => {
   try {
