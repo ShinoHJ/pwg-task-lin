@@ -106,10 +106,23 @@ textarea {
 }
 
 .listArea {
-  // width: 960px;
   background: var(--bs-white);
   padding: 25px;
   border-radius: var(--bs-border-radius);
+  position: relative;
+}
+
+.listArea::before {
+  content: '';
+  background-image: url('./../public/logo.png');
+  background-repeat: no-repeat;
+  width: 86px;
+  height: 34px;
+  display: block;
+  position: absolute;
+  top: 10%;
+  right: 0;
+  transform: rotate(320deg);
 }
 
 .listTitle {

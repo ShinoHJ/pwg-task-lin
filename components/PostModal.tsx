@@ -1,3 +1,4 @@
+'use client'
 import React, { useRef, useEffect, useState } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
