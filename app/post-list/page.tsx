@@ -6,9 +6,9 @@ import DeleteModal from '@/components/DeleteModal'
 import { useRouter } from 'next/navigation';
 import { usePosts } from '@/hooks/usePost';
 import Pagination from '@/components/Pagination';
-import { Modal } from 'bootstrap';
 import { Post } from '@/type';
 import Dashboard from '@/components/Dashboard';
+import { useAuth } from '@/hooks/useAuth';
 
 type ModalMode = 'add' | 'edit';
 
@@ -23,10 +23,15 @@ interface DelModalState {
   postId: number;
 }
 
-const PostList: React.FC = () => {
+interface PostProps {
+  post: Post;
+}
+
+const PostList: React.FC<PostProps> = ({ post }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const { posts, fetchAllPosts, removePost, totalPages } = usePosts()
+  const { posts, fetchPostsBasedOnRole, totalPages } = usePosts()
+  const { token } = useAuth()
   const [modalState, setModalState] = useState<ModalState>({
     mode: 'add',
     showModal: false,
@@ -36,12 +41,10 @@ const PostList: React.FC = () => {
     showModal: false,
     postId: 0,
   });
-  const token = localStorage.getItem('token') || '';
 
   useEffect(() => {
-    const adminToken = localStorage.getItem('token') || '';
-    if (adminToken) {
-      fetchAllPosts(adminToken, currentPage, 10);
+    if (token) {
+      fetchPostsBasedOnRole(token, currentPage, 10);
     }
   }, [currentPage]);
 
@@ -79,9 +82,8 @@ const PostList: React.FC = () => {
   };
 
   const handleRemovePost = async (postId: number) => {
-    const userToken = localStorage.getItem('token') || '';
 
-    if (!userToken) {
+    if (!token) {
       console.error('User is not authenticated');
       return;
     }
@@ -93,12 +95,16 @@ const PostList: React.FC = () => {
   };
 
   const handleDeleteSuccess = async () => {
-    await fetchAllPosts(token, currentPage, 10);
+    if (token) {
+      await fetchPostsBasedOnRole(token, currentPage, 10);
+    }
   };
 
   const handleSavePost = async () => {
-    await fetchAllPosts(localStorage.getItem('token') || '', currentPage, 10);
-    handleCloseModal();
+    if (token) {
+      await fetchPostsBasedOnRole(token, currentPage, 10);
+      handleCloseModal();
+    }
   };
 
   return (
@@ -107,12 +113,13 @@ const PostList: React.FC = () => {
       <div className="container d-flex flex-column justify-content-top align-items-center vh-100">
         <h2 className='formTitle mt-4'>Post List</h2>
 
-        <Dashboard adminToken={token} userToken={token} />
+        {token && <Dashboard token={token} />}
 
         <div className="row w-100">
           {posts.map(post => (
             <div className="col-12 col-md-6 col-lg-4 mb-4" key={post.id}>
               <div className='listArea'>
+                <div className="postTime">{post.date}</div>
                 <h4 className='listTitle'>{post.title}</h4>
                 <p className='listContent'>{post.body}</p>
                 <div className='tag'>
@@ -136,10 +143,10 @@ const PostList: React.FC = () => {
           onPageChange={handlePageChange}
         />
 
-      </div>
+      </div >
 
       {/* Modal */}
-      <PostModal
+      < PostModal
         mode={modalState.mode}
         post={modalState.editingPost}
         onSave={handleSavePost}

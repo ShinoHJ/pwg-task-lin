@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
-import { Post } from '@/type';
+import { useAuth } from '@/hooks/useAuth';
 
 interface DeleteModalProps {
   postId: number;
@@ -12,6 +12,7 @@ interface DeleteModalProps {
 
 const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, onDeleteSuccess }) => {
   const { removePost } = usePosts();
+  const { token } = useAuth()
 
   useEffect(() => {
     const modalElement = document.getElementById('confirmDelModal');
@@ -32,15 +33,14 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, o
   }, [isVisible]);
 
   const handleRemovePost = async () => {
-    const userToken = localStorage.getItem('token') || '';
 
-    if (!userToken) {
+    if (!token) {
       console.error('User is not authenticated');
       return;
     }
 
     try {
-      await removePost(userToken, postId);
+      await removePost(token, postId);
       onDeleteSuccess();
       onClose();
     } catch (error) {
@@ -50,7 +50,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, o
 
   return (
     <>
-      <div className="modal fade" id="confirmDelModal" aria-hidden="true" tabIndex={-1}>
+      <div className="modal fade" id="confirmDelModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" tabIndex={-1}>
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className='formArea'>
@@ -58,12 +58,12 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, o
               <div className='text-center mt-4'>Are you sure you want to delete this post?</div>
               <div className="row justify-content-center">
                 <div className="col-4">
-                  <button type="button" className="btn btn-yellow02 mt-4 mb-3 rounded-pill px-4 w-100" onClick={onClose}>
+                  <button type="button" className="btn btn-yellow02 mt-4 mb-3 rounded-pill w-100" onClick={onClose}>
                     Cancel
                   </button>
                 </div>
                 <div className="col-4">
-                  <button type="button" className="btn btn-red01 mt-4 mb-3 rounded-pill px-4 w-100" onClick={handleRemovePost}>
+                  <button type="button" className="btn btn-red01 mt-4 mb-3 rounded-pill w-100" onClick={handleRemovePost}>
                     Delete
                   </button>
                 </div>

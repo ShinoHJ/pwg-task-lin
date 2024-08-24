@@ -28,6 +28,7 @@ interface PostData {
 }
 
 export interface PostResponse {
+  date: string;
   id: number;
   title: string;
   body: string;

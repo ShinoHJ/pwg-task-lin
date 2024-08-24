@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
 import { Post } from '@/type';
+import { useAuth } from '@/hooks/useAuth'
 
 interface PostModalProps {
   mode: 'add' | 'edit';
@@ -19,6 +20,7 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
   const [validationErrors, setValidationErrors] = useState<{ title?: string; body?: string; tags?: string }>({});
   const inputRef = useRef<HTMLInputElement>(null);
   const tagsContainerRef = useRef<HTMLDivElement>(null);
+  const { token } = useAuth()
   const [availableTags] = useState<string[]>([
     "history", "american", "crime", "science", "fiction", "fantasy", "space",
     "adventure", "nature", "environment", "philosophy", "psychology", "health"
@@ -76,17 +78,16 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
     e.preventDefault();
 
     if (validate()) {
-      const userToken = localStorage.getItem('token');
-      if (!userToken) {
+      if (!token) {
         console.error('User token not found');
         return;
       }
 
       try {
         if (mode === 'add') {
-          await addPost(userToken, { title, body, tags });
+          await addPost(token, { title, body, tags });
         } else if (mode === 'edit' && post) {
-          await updatePost(userToken, post.id, { title, body, tags });
+          await updatePost(token, post.id, { title, body, tags });
         }
         onSave({ title, body, tags });
         onClose();
@@ -157,7 +158,7 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
 
                 <div className="mb-3">
                   <label htmlFor="exampleInputTags" className="form-label">Tags</label>
-                  <div className="tags-input-container">
+                  <div className={`tags-input-container form-control ${validationErrors.tags ? 'is-invalid' : ''}`}>
                     <select className="form-select" onChange={handleTagChange} value="">
                       <option value="" disabled></option>
                       {availableTags.map((tag, index) => (

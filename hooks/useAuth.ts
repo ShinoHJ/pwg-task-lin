@@ -11,14 +11,16 @@ interface DecodedToken {
 export const useAuth = () => {
   const [user, setUser] = useState<DecodedToken | null>(null);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
       try {
-        const decoded = jwtDecode<DecodedToken>(token);
+        const decoded = jwtDecode<DecodedToken>(storedToken);
         if (decoded.exp * 1000 > Date.now()) {
           setUser(decoded);
+          setToken(storedToken)
         } else {
           localStorage.removeItem('token');
         }
@@ -30,5 +32,5 @@ export const useAuth = () => {
     setLoading(false);
   }, []);
 
-  return { user, loading, isAdmin: user?.role === 'admin' };
+  return { user, token, loading, isAdmin: user?.role === 'admin' };
 };

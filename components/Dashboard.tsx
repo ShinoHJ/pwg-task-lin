@@ -3,28 +3,27 @@ import { useStatistics } from '@/hooks/useStatistics';
 import { useAuth } from '@/hooks/useAuth'
 
 interface DashboardProps {
-  adminToken: string;
-  userToken: string;
+  token: string;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ adminToken, userToken }) => {
-  const { statistics, loading, error, refreshStatistics } = useStatistics(adminToken, userToken);
+const Dashboard: React.FC<DashboardProps> = ({ token }) => {
+  const { statistics, loading, refreshStatistics } = useStatistics(token);
   const { isAdmin } = useAuth()
 
   useEffect(() => {
-    refreshStatistics();
+    if (!isAdmin) {
+      return
+    } else {
+      refreshStatistics();
+    }
   }, [refreshStatistics]);
-
-  const handleSpecificEvent = () => {
-    refreshStatistics();
-  };
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <>
       {
-        isAdmin && (
+        !isAdmin ? null : (
           <>
             <div className="row w-100" >
               <div className="col-4 mb-4">

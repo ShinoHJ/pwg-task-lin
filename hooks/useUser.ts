@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { registerUser, loginUser, getAllAccounts } from '@/app/api/apiClient';
+import { registerUser, loginUser } from '@/app/api/apiClient';
 
 interface User {
   username: string;

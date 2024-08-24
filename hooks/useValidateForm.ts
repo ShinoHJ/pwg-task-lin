@@ -33,7 +33,7 @@ const useFormValidation = (
     if (fields.password !== undefined) {
       if (!fields.password) {
         errors.password = 'Password is required.';
-      } else if (isRegister && fields.password.length < 6) {
+      } else if (fields.password.length < 6) {
         errors.password = 'Password must be at least 6 characters long.';
       }
     }

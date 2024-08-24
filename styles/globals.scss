@@ -31,9 +31,7 @@ $pagination-color: #000;
 $pagination-active-color: #000;
 $pagination-active-bg: $yellow01;
 
-@import '~bootstrap/scss/bootstrap';
-
-// google Noto Sans TC 字體
+@import '../node_modules/bootstrap/scss/bootstrap';
 @import 'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap';
 @import 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap';
 
@@ -151,7 +149,6 @@ textarea {
   margin-right: 8px;
   position: relative;
   top: 3px;
-  left: 5px;
 }
 
 .input-tag {
@@ -196,6 +193,11 @@ textarea {
 
 .page-item:nth-last-child(1) {
   margin-right: unset;
+}
+
+.tags-input-container .invalid-feedback{
+  position: absolute;
+  top: 100%;
 }
 
 @media screen and (max-width: 680px) {

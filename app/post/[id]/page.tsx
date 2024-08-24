@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Toolbar from '@/components/Toolbar'
 import { usePosts } from '@/hooks/usePost';
 import { Post } from '@/type';
+import { useAuth } from '@/hooks/useAuth';
 
 type Params = {
   params: {
@@ -14,13 +15,16 @@ const ViewPostPage: React.FC<Params> = ({ params }) => {
   const { id } = params;
   const { getPost } = usePosts();
   const [post, setPost] = useState<Post | null>(null);
+  const { token } = useAuth()
 
   useEffect(() => {
-    const token = localStorage.getItem('token') || '';
-
     const fetchPost = async () => {
-      const fetchedPost = await getPost(token, id);
-      setPost(fetchedPost);
+      if (token) {
+        const fetchedPost = await getPost(token, id);
+        setPost(fetchedPost);
+      } else {
+        console.error('No token available');
+      }
     };
 
     fetchPost();
