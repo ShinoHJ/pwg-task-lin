@@ -7,7 +7,7 @@ interface Statistics {
   userPosts: number;
 }
 
-export const useStatistics = (token: string) => {
+export const useStatistics = (adminToken: string, userToken: string) => {
   const [statistics, setStatistics] = useState<Statistics>({
     totalAccounts: 0,
     totalPosts: 0,
@@ -21,9 +21,9 @@ export const useStatistics = (token: string) => {
       setLoading(true);
       
       const [accountsResponse, totalPosts, userPosts] = await Promise.all([
-        getAllAccounts(token),
-        getAllPostsCount(token),
-        getUserPostsCount(token)
+        getAllAccounts(adminToken),
+        getAllPostsCount(adminToken),
+        getUserPostsCount(userToken)
       ]);
 
       setStatistics({
@@ -36,7 +36,7 @@ export const useStatistics = (token: string) => {
       setError('Failed to fetch statistics');
       setLoading(false);
     }
-  }, [token]);
+  }, [adminToken, userToken]);
 
   useEffect(() => {
     fetchStatistics();

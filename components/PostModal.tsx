@@ -182,10 +182,10 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
                 </div>
                 <div className="row justify-content-around">
                   <div className="col-4">
-                    <button type="button" className="btn btn-yellow02 mt-4 mb-3 rounded-pill px-4 w-100" onClick={handleClose}>Cancel</button>
+                    <button type="button" className="btn btn-yellow02 mt-4 mb-3 rounded-pill w-100" onClick={handleClose}>Cancel</button>
                   </div>
                   <div className="col-4">
-                    <button type="submit" className="btn btn-yellow01 mt-4 mb-3 rounded-pill px-4 w-100">
+                    <button type="submit" className="btn btn-yellow01 mt-4 mb-3 rounded-pill w-100">
                       {mode === 'add' ? 'Add' : 'Edit'}
                     </button>
                   </div>

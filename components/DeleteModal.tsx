@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePosts } from '@/hooks/usePost';
 import { Modal } from 'bootstrap';
-import { useAuth } from '@/hooks/useAuth';
+import { Post } from '@/type';
 
 interface DeleteModalProps {
   postId: number;
@@ -12,7 +12,6 @@ interface DeleteModalProps {
 
 const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, onDeleteSuccess }) => {
   const { removePost } = usePosts();
-  const { token } = useAuth()
 
   useEffect(() => {
     const modalElement = document.getElementById('confirmDelModal');
@@ -33,14 +32,15 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, o
   }, [isVisible]);
 
   const handleRemovePost = async () => {
+    const userToken = localStorage.getItem('token') || '';
 
-    if (!token) {
+    if (!userToken) {
       console.error('User is not authenticated');
       return;
     }
 
     try {
-      await removePost(token, postId);
+      await removePost(userToken, postId);
       onDeleteSuccess();
       onClose();
     } catch (error) {

@@ -8,7 +8,6 @@ import { usePosts } from '@/hooks/usePost';
 import Pagination from '@/components/Pagination';
 import { Post } from '@/type';
 import Dashboard from '@/components/Dashboard';
-import { useAuth } from '@/hooks/useAuth';
 
 type ModalMode = 'add' | 'edit';
 
@@ -27,11 +26,10 @@ interface PostProps {
   post: Post;
 }
 
-const PostList: React.FC<PostProps> = ({ post }) => {
+const PostList: React.FC<PostProps> = ({post}) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const { posts, fetchPostsBasedOnRole, totalPages } = usePosts()
-  const { token } = useAuth()
+  const { posts, fetchPostsBasedOnRole, removePost, totalPages } = usePosts()
   const [modalState, setModalState] = useState<ModalState>({
     mode: 'add',
     showModal: false,
@@ -41,9 +39,11 @@ const PostList: React.FC<PostProps> = ({ post }) => {
     showModal: false,
     postId: 0,
   });
+  const token = localStorage.getItem('token') || '';
 
   useEffect(() => {
-    if (token) {
+    const adminToken = localStorage.getItem('token') || '';
+    if (adminToken) {
       fetchPostsBasedOnRole(token, currentPage, 10);
     }
   }, [currentPage]);
@@ -82,8 +82,9 @@ const PostList: React.FC<PostProps> = ({ post }) => {
   };
 
   const handleRemovePost = async (postId: number) => {
+    const userToken = localStorage.getItem('token') || '';
 
-    if (!token) {
+    if (!userToken) {
       console.error('User is not authenticated');
       return;
     }
@@ -95,16 +96,12 @@ const PostList: React.FC<PostProps> = ({ post }) => {
   };
 
   const handleDeleteSuccess = async () => {
-    if (token) {
-      await fetchPostsBasedOnRole(token, currentPage, 10);
-    }
+    await fetchPostsBasedOnRole(token, currentPage, 10);
   };
 
   const handleSavePost = async () => {
-    if (token) {
-      await fetchPostsBasedOnRole(token, currentPage, 10);
-      handleCloseModal();
-    }
+    await fetchPostsBasedOnRole(localStorage.getItem('token') || '', currentPage, 10);
+    handleCloseModal();
   };
 
   return (
@@ -113,7 +110,7 @@ const PostList: React.FC<PostProps> = ({ post }) => {
       <div className="container d-flex flex-column justify-content-top align-items-center vh-100">
         <h2 className='formTitle mt-4'>Post List</h2>
 
-        {token && <Dashboard token={token} />}
+        <Dashboard adminToken={token} userToken={token} />
 
         <div className="row w-100">
           {posts.map(post => (
@@ -128,9 +125,9 @@ const PostList: React.FC<PostProps> = ({ post }) => {
                   ))}
                 </div>
                 <div className='btn-group mt-4 d-flex justify-content-center'>
-                  <button type="button" className="btn btn-green02 rounded-pill px-4" onClick={() => handleEditPost(post)}>Edit</button>
-                  <button type="button" className="btn btn-yellow01 rounded-pill px-4" onClick={() => router.push(`/post/${post.id}`)}>View</button>
-                  <button type="button" className="btn btn-red01 rounded-pill px-4" onClick={() => handleRemovePost(post.id)}>Delete</button>
+                  <button type="button" className="btn btn-green02 rounded-pill w-100" onClick={() => handleEditPost(post)}>Edit</button>
+                  <button type="button" className="btn btn-yellow01 rounded-pill w-100" onClick={() => router.push(`/post/${post.id}`)}>View</button>
+                  <button type="button" className="btn btn-red01 rounded-pill w-100" onClick={() => handleRemovePost(post.id)}>Delete</button>
                 </div>
               </div>
             </div>

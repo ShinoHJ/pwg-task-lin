@@ -3,19 +3,16 @@ import { useStatistics } from '@/hooks/useStatistics';
 import { useAuth } from '@/hooks/useAuth'
 
 interface DashboardProps {
-  token: string;
+  adminToken: string;
+  userToken: string;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ token }) => {
-  const { statistics, loading, refreshStatistics } = useStatistics(token);
+const Dashboard: React.FC<DashboardProps> = ({ adminToken, userToken }) => {
+  const { statistics, loading, error, refreshStatistics } = useStatistics(adminToken, userToken);
   const { isAdmin } = useAuth()
 
   useEffect(() => {
-    if (!isAdmin) {
-      return
-    } else {
-      refreshStatistics();
-    }
+    refreshStatistics();
   }, [refreshStatistics]);
 
   if (loading) return <div>Loading...</div>;
@@ -23,7 +20,7 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   return (
     <>
       {
-        !isAdmin ? null : (
+        !isAdmin? null : (
           <>
             <div className="row w-100" >
               <div className="col-4 mb-4">
@@ -40,7 +37,7 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
               </div>
               <div className="col-4 mb-4">
                 <div className='infoArea bg-green03'>
-                  <h3 className='infoTitle text-center'>My Post</h3>
+                  <h3 className='infoTitle text-center'>My <br className='d-md-none'/>Post</h3>
                   <p className='infoContent text-center mb-0'>{statistics.userPosts}</p>
                 </div>
               </div>

@@ -9,6 +9,13 @@ interface PostData {
   tags: string[];
 }
 
+// interface Post {
+//   id: number;
+//   title: string;
+//   body: string;
+//   tags: string[];
+// }
+
 interface PostsContextProps {
   posts: Post[];
   addPost: (userToken: string, postData: PostData) => Promise<void>;
@@ -24,7 +31,7 @@ export const usePosts = (): PostsContextProps => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const { token, isAdmin } = useAuth();
 
-  const formatTime = (dateString: string): string => {
+  const formatToTaiwanTime = (dateString: string): string => {
     const date = new Date(dateString);
     const taiwanOffset = 24 * 60;
     const localOffset = date.getTimezoneOffset();
@@ -39,7 +46,7 @@ export const usePosts = (): PostsContextProps => {
         const convertedPosts: Post[] = response.data.map(post => ({
           ...post,
           id: typeof post.id === 'string' ? parseInt(post.id, 10) : post.id,
-          date: formatTime(post.date)
+          date: formatToTaiwanTime(post.date)
         }));
         setPosts(convertedPosts);
         setTotalPages(response.totalPages);
@@ -52,7 +59,7 @@ export const usePosts = (): PostsContextProps => {
         const convertedPosts: Post[] = response.data.map(post => ({
           ...post,
           id: typeof post.id === 'string' ? parseInt(post.id, 10) : post.id,
-          date: formatTime(post.date)
+          date: formatToTaiwanTime(post.date)
         }));
         setPosts(convertedPosts);
         setTotalPages(response.totalPages);
