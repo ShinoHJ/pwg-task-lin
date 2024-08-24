@@ -1,0 +1,221 @@
+$yellow01: #F8B959;
+$yellow02: #FDEACD;
+$green01: #088E16;
+$green02: #D9F7CF;
+$green03: #BDDBB3;
+$red01: #F95A50;
+$red02: #E6A5A1;
+
+$theme-colors: (
+  "yellow01": $yellow01,
+  "yellow02": $yellow02,
+  "green01": $green01,
+  "green02": $green02,
+  "red01": $red01,
+  "red02": $red02,
+  "green03":$green03
+);
+
+// 按鈕圓角邊 button radius
+$border-radius: 1rem;
+$border-radius-sm: 1rem;
+$border-radius-lg: 1rem;
+$border-color: var(--bs-yellow);
+$input-border-width: 2px;
+
+// pagination
+$pagination-border-color: unset;
+$pagination-border-radius: 5px;
+$pagination-padding-x: 10.5px;
+$pagination-color: #000;
+$pagination-active-color: #000;
+$pagination-active-bg: $yellow01;
+
+@import '~bootstrap/scss/bootstrap';
+
+// google Noto Sans TC 字體
+@import 'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap';
+
+// 定義中文字體用
+body {
+  font-family: "Inter", sans-serif;
+  background: #E6E3E3;
+}
+
+a {
+  text-decoration: none;
+}
+
+textarea {
+  resize: none;
+}
+
+.formArea {
+  width: 500px;
+  max-width: 100%;
+  background: var(--bs-white);
+  padding: 50px 85px;
+  border-radius: var(--bs-border-radius);
+}
+
+.formTitle {
+  font-size: 2rem;
+  font-weight: 400;
+  padding: 20px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.infoArea {
+  padding: 25px;
+  border-radius: var(--bs-border-radius);
+}
+
+.infoTitle {
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.infoContent {
+  font-size: 2rem;
+}
+
+.articleArea {
+  background: var(--bs-white);
+  padding: 85px;
+  border-radius: var(--bs-border-radius);
+  width: 100%;
+}
+
+.articleTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.articleArea .tag button,
+.article .btn-group button {
+  margin-right: 5px;
+}
+
+.tag button:nth-last-child(1),
+.btn-group button:nth-last-child(1) {
+  margin-right: unset;
+}
+
+.listArea {
+  // width: 960px;
+  background: var(--bs-white);
+  padding: 25px;
+  border-radius: var(--bs-border-radius);
+}
+
+.listTitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.listContent {
+  font-size: 1rem;
+}
+
+.listArea .tag button,
+.btn-group button {
+  font-size: 0.8rem;
+  margin-right: 15px;
+}
+
+.listArea .tag button {
+  margin-bottom: 8px;
+}
+
+.tags-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  position: relative;
+  border: 2px solid var(--bs-yellow01);
+  border-radius: var(--bs-border-radius);
+  min-height: 38px;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 8px;
+  position: relative;
+  top: 3px;
+  left: 5px;
+}
+
+.input-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #D9D9D9;
+  border-radius: 20px;
+  padding: 2px 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.tags-input {
+  padding: 5px;
+  border-color: transparent !important;
+}
+
+#articleModal select {
+  z-index: 10;
+  background: transparent;
+  border-color: transparent !important;
+  position: absolute;
+}
+
+.form-control:focus,
+#articleModal select:focus {
+  border-color: var(--bs-yellow01);
+  box-shadow: none;
+  background: transparent;
+}
+
+.page-item {
+  margin-right: 1rem;
+}
+
+.page-item .page-link {
+  border-radius: 5px;
+  width: 35px;
+  height: 35px;
+  text-align: center;
+}
+
+.page-item:nth-last-child(1) {
+  margin-right: unset;
+}
+
+@media screen and (max-width: 680px) {
+  .formArea {
+    padding: 20px;
+  }
+
+  .infoArea {
+    padding: 12px 8px 10px;
+  }
+
+  .formTitle {
+    margin-bottom: unset;
+  }
+
+  .articleArea {
+    padding: 25px;
+  }
+
+  .articleTitle {
+    margin-bottom: 20px;
+  }
+}
