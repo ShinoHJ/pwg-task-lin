@@ -116,7 +116,7 @@ const PostList: React.FC<PostProps> = ({post}) => {
           {posts.map(post => (
             <div className="col-12 col-md-6 col-lg-4 mb-4" key={post.id}>
               <div className='listArea'>
-                <div className="postTime mb-5 text-yellow01">{post.date}</div>
+                <div className="postTime mb-4 mb-md-5 text-yellow01">{post.date}</div>
                 <h4 className='listTitle'>{post.title}</h4>
                 <p className='listContent'>{post.body}</p>
                 <div className='tag'>
