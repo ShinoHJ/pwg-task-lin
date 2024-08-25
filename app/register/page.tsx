@@ -69,7 +69,6 @@ const RegisterPage: React.FC = () => {
     event.preventDefault()
 
     const isValid = validateForm(true)
-    console.log('Form validation result:', isValid)
     if (!isValid) {
       return
     }

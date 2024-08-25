@@ -6,6 +6,25 @@ export const useUser = () => {
   const [user, setUser] = useState<User | null>(null);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
+  // const login = async (email: string, password: string) => {
+  //   try {
+  //     const response = await loginUser({ email, password });
+
+  //     const fetchedUser: User = {
+  //       username: response.username,
+  //       email: response.email,
+  //       token: response.token,
+  //       message: response.message,
+  //       userId: response.userId,
+  //     };
+  //     setUser(fetchedUser);
+  //     localStorage.setItem('token', fetchedUser.token || '');
+  //   } catch (error) {
+  //     console.error('Login failed:', error);
+  //     throw error;
+  //   }
+  // };
+
   const login = async (email: string, password: string) => {
     try {
       const response = await loginUser({ email, password });
@@ -19,7 +38,7 @@ export const useUser = () => {
       };
       setUser(fetchedUser);
       localStorage.setItem('token', fetchedUser.token || '');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
       throw error;
     }

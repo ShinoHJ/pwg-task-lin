@@ -25,7 +25,14 @@ export const loginUser = async (credentials: { email: string; password: string }
     const response: AxiosResponse<any> = await apiClient.post('/api/account/login', credentials);
     return response.data;
   } catch (error) {
-    throw error;
+    if (axios.isAxiosError(error)) {
+      throw {
+        status: error.response?.status,
+        data: error.response?.data,
+      };
+    } else {
+      throw error;
+    }
   }
 };
 

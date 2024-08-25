@@ -15,7 +15,7 @@ const LoginPage: React.FC = () => {
   const [_, setError] = useState<string | null>(null);
   const { validationErrors, validateForm, handleBlur } = useFormValidation({ email, password }, false);
   const [modalInitializer, setModalInitializer] = useState<((element: HTMLElement) => ModalInstance) | null>(null);
-  
+
   useEffect(() => {
     import('bootstrap').then(bootstrap => {
       setModalInitializer(() => (element: HTMLElement) => new bootstrap.Modal(element) as ModalInstance);
@@ -37,10 +37,10 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const isValid = validateForm()
-    if (!isValid) {
-      return
-    }
+    const isValid = validateForm(true)
+    // if (!isValid) {
+    //   return
+    // }
 
     try {
       await login(email, password);
@@ -53,12 +53,17 @@ const LoginPage: React.FC = () => {
           router.push('/post-list')
         }, 1500)
       }
-    } catch (error) {
-      setError('Login failed. Please check your credentials.');
-      const element = document.getElementById('errorModal');
-      if (element && modalInitializer) {
-        const modal = modalInitializer(element);
-        modal.show();
+    } catch (error: any) {
+      if (error.status === 400) {
+        return
+      } else if (error.status === 401) {
+        validateForm(true);
+        setError('Login failed. Please check your credentials.');
+        const element = document.getElementById('errorModal');
+        if (element && modalInitializer) {
+          const modal = modalInitializer(element);
+          modal.show();
+        }
       }
     }
   };
