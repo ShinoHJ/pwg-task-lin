@@ -1,15 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useStatistics } from '@/hooks/useStatistics';
 import { useAuth } from '@/hooks/useAuth'
 import {DashboardProps} from '@/type'
+import StatisticItem from '@/components/StatisticItem';
 
-const Dashboard: React.FC<DashboardProps> = ({ adminToken, userToken }) => {
+const Dashboard: React.FC<DashboardProps> = ({ adminToken, userToken, shouldUpdate, onUpdateComplete }) => {
   const { statistics, loading, error, refreshStatistics } = useStatistics(adminToken, userToken);
   const { isAdmin } = useAuth()
 
+  const handleRefresh = useCallback(() => {
+    refreshStatistics();
+    onUpdateComplete();
+  }, [refreshStatistics, onUpdateComplete]);
+  
   useEffect(() => {
     refreshStatistics();
   }, [refreshStatistics]);
+
+  useEffect(() => {
+    if (shouldUpdate) {
+      handleRefresh();
+    }
+  }, [shouldUpdate, handleRefresh]);
 
   if (loading) return <div>Loading...</div>;
 

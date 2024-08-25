@@ -25,7 +25,9 @@ const PostList: React.FC<Post> = ({ }) => {
   });
   const { token, isAdmin } = useAuth()
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  
+  const [updateDashboard, setUpdateDashboard] = useState(false);
+  const [statisticsToUpdate, setStatisticsToUpdate] = useState<string[]>([]);
+
   useEffect(() => {
     if (isAdmin && token) {
       fetchPostsBasedOnRole(token, currentPage, 10);
@@ -70,27 +72,35 @@ const PostList: React.FC<Post> = ({ }) => {
     });
   };
 
-  const handleRemovePost = async (postId: number) => {
-    const userToken = localStorage.getItem('token') || '';
+  // const handleRemovePost = async (postId: number) => {
+  //   const userToken = localStorage.getItem('token') || '';
 
-    if (!userToken) {
-      console.error('User is not authenticated');
-      return;
+  //   if (!userToken) {
+  //     console.error('User is not authenticated');
+  //     return;
+  //   }
+
+  //   setDelModalState({
+  //     showModal: true,
+  //     postId: postId,
+  //   });
+  // };
+
+  const handleSavePost = async () => {
+    if (token) {
+      await fetchPostsBasedOnRole(token, currentPage, 10);
+      setStatisticsToUpdate(['totalPosts', 'userPosts']);
+      setUpdateDashboard(true)
     }
-
-    setDelModalState({
-      showModal: true,
-      postId: postId,
-    });
+    handleCloseModal();
   };
 
   const handleDeleteSuccess = async () => {
-    if(token) await fetchPostsBasedOnRole(token, currentPage, 10);
-  };
-
-  const handleSavePost = async () => {
-    if(token)  await fetchPostsBasedOnRole(token, currentPage, 10);
-    handleCloseModal();
+    if (token) {
+      await fetchPostsBasedOnRole(token, currentPage, 10);
+      setStatisticsToUpdate(['totalPosts', 'userPosts']);
+      setUpdateDashboard(true);
+    }
   };
 
   return (
@@ -99,7 +109,14 @@ const PostList: React.FC<Post> = ({ }) => {
       <div className="container d-flex flex-column justify-content-top align-items-center vh-100">
         <h2 className='formTitle mt-4'>Post List</h2>
 
-        {isAdmin && token && <Dashboard adminToken={token} userToken={token} />
+        {isAdmin && token &&
+          <Dashboard
+            adminToken={token}
+            userToken={token}
+            shouldUpdate={updateDashboard}
+            onUpdateComplete={() => setUpdateDashboard(false)}
+            statisticsToUpdate={statisticsToUpdate} 
+          />
         }
         <div className="row w-100">
           {posts.map(post => (

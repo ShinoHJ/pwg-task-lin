@@ -45,6 +45,9 @@ export interface PostProps {
 export interface DashboardProps {
   adminToken: string;
   userToken: string;
+  shouldUpdate: boolean;
+  onUpdateComplete: () => void;
+  statisticsToUpdate?: string[];
 }
 
 export interface DeleteModalProps {
@@ -119,4 +122,10 @@ export interface DecodedToken {
 export interface ModalInstance {
   show: () => void;
   hide: () => void;
+}
+
+export interface StatisticItemProps {
+  title: string;
+  value: number;
+  className: string;
 }
