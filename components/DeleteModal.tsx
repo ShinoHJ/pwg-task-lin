@@ -1,14 +1,15 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import { usePosts } from '@/hooks/usePost';
-import { Modal } from 'bootstrap';
-import { Post, DeleteModalProps } from '@/type';
+import { DeleteModalProps } from '@/type';
 import { Modal as ModalInstance } from 'bootstrap';
+import { useAuth } from '@/hooks/useAuth'
 
-const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, onDeleteSuccess }) => {
-  const { removePost } = usePosts();
+const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, post, onDeleteSuccess }) => {
+  const { removePost, posts } = usePosts();
   const [modalInitializer, setModalInitializer] = useState<typeof import('bootstrap').Modal | null>(null);
   const modalInstanceRef = useRef<ModalInstance | null>(null);
+  const { token } = useAuth()
 
   useEffect(() => {
     import('bootstrap').then(bootstrap => {
@@ -36,15 +37,17 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, o
   }, [isVisible]);
 
   const handleRemovePost = async () => {
-    const userToken = localStorage.getItem('token') || '';
 
-    if (!userToken) {
+    if (!token) {
       console.error('User is not authenticated');
+      return;
+    } else if (!post) {
+      console.error('No post selected for deletion.');
       return;
     }
 
     try {
-      await removePost(userToken, postId);
+      await removePost(token, post);
       onDeleteSuccess();
       onClose();
     } catch (error) {
@@ -58,7 +61,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, isVisible, postId, o
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className='formArea'>
-              <h5 className='text-red01 text-center'>Post Title</h5>
+              <h5 className='text-red01 text-center'>{post?.title}</h5>
               <div className='text-center mt-4'>Are you sure you want to delete this post?</div>
               <div className="row justify-content-center">
                 <div className="col-4">

@@ -8,19 +8,31 @@ import useFormValidation from '@/hooks/useValidateForm';
 import { Modal as ModalInstance } from 'bootstrap';
 
 const LoginPage: React.FC = () => {
-  const { login } = useUser();
+  const { user, login } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter()
-  const { validationErrors, validateForm } = useFormValidation({ email, password }, false);
+  const [_, setError] = useState<string | null>(null);
+  const { validationErrors, validateForm, handleBlur } = useFormValidation({ email, password }, false);
   const [modalInitializer, setModalInitializer] = useState<((element: HTMLElement) => ModalInstance) | null>(null);
-
+  
   useEffect(() => {
     import('bootstrap').then(bootstrap => {
       setModalInitializer(() => (element: HTMLElement) => new bootstrap.Modal(element) as ModalInstance);
     });
   }, []);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    validateForm();
+    handleBlur('email')
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    validateForm();
+    handleBlur('password')
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +73,7 @@ const LoginPage: React.FC = () => {
               <label htmlFor="pwgInputEmail1" className="form-label">Email</label>
               <input type="email" className={`form-control rounded-pill ${validationErrors.email ? 'is-invalid' : ''}`} id="pwgInputEmail1"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 aria-describedby="emailHelp" />
               {validationErrors.email && (
                 <div className="ps-2 invalid-feedback">{validationErrors.email}</div>
@@ -71,7 +83,7 @@ const LoginPage: React.FC = () => {
               <label htmlFor="pwgInputPassword1" className="form-label">Password</label>
               <input type="password" className={`form-control rounded-pill ${validationErrors.password ? 'is-invalid' : ''}`} id="pwgInputPassword1"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
               />
               {validationErrors.password && (
                 <div className="ps-2 invalid-feedback">{validationErrors.password}</div>
@@ -90,7 +102,7 @@ const LoginPage: React.FC = () => {
           <div className="modal-content">
             <div className="modal-body d-flex flex-column align-items-center">
               <Image alt='' src='/successIcon.svg' width={40} height={40} className='m-4' />
-              <p className='w-100 text-center mb-4'>Successfully login</p>
+              <p className='w-100 text-center mb-4'>{user?.message}</p>
             </div>
           </div>
         </div>

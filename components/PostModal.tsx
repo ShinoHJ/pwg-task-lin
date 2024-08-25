@@ -10,6 +10,7 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
   const { addPost, updatePost } = usePosts();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [validationErrors, setValidationErrors] = useState<{ title?: string; body?: string; tags?: string }>({});
   const inputRef = useRef<HTMLInputElement>(null);
@@ -78,6 +79,97 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
     return isValid;
   };
 
+  const validateTitle = () => {
+    if (!title) {
+      setValidationErrors(prevErrors => ({
+        ...prevErrors,
+        title: 'Title is required',
+      }));
+      return false;
+    } else {
+      setValidationErrors(prevErrors => ({
+        ...prevErrors,
+        title: '',
+      }));
+      return true;
+    }
+  };
+
+  const validateBody = () => {
+    if (!body) {
+      setValidationErrors(prevErrors => ({
+        ...prevErrors,
+        body: 'Content is required',
+      }));
+      return false;
+    } else {
+      setValidationErrors(prevErrors => ({
+        ...prevErrors,
+        body: '',
+      }));
+      return true;
+    }
+  };
+
+  const validateTags = () => {
+    if (tags.length === 0) {
+      setValidationErrors(prevErrors => ({
+        ...prevErrors,
+        tags: 'Please select at least one tag',
+      }));
+      return false;
+    } else {
+      setValidationErrors(prevErrors => ({
+        ...prevErrors,
+        tags: '',
+      }));
+      return true;
+    }
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+
+    if (validationErrors.title) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, title: '' }));
+    }
+  };
+
+  const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newBody = e.target.value;
+    setBody(newBody);
+
+    if (validationErrors.body) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, body: '' }));
+    }
+  };
+
+  const handleTagsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTag = e.target.value;
+    if (selectedTag && !tags.includes(selectedTag)) {
+      setTags([...tags, selectedTag]);
+    }
+    setSelectedTag('');
+
+    if (validationErrors.tags) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, tags: '' }));
+    }
+  };
+
+  const handleTitleBlur = () => {
+    validateTitle();
+  };
+
+  const handleBodyBlur = () => {
+    validateBody();
+  };
+
+  const handleTagsBlur = () => {
+    validateTags();
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -101,19 +193,14 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
     }
   };
 
-  const handleTagChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedTag = e.target.value;
-    if (selectedTag && !tags.includes(selectedTag)) {
-      setTags([...tags, selectedTag]);
-    }
-  };
-
   const handleTagRemove = (index: number) => {
     setTags(tags.filter((_, i) => i !== index));
   };
 
+
   const handleClose = () => {
     onClose();
+    setValidationErrors({ title: '', body: '', tags: '' });
   };
 
   useEffect(() => {
@@ -142,7 +229,8 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
                   <label htmlFor="exampleInputTitle" className="form-label">Title</label>
                   <input type="text" className={`form-control ${validationErrors.title ? 'is-invalid' : ''}`} id="exampleInputTitle"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleBlur}
                     aria-describedby="titleHelp" />
                   {validationErrors.title && (
                     <div className="invalid-feedback">{validationErrors.title}</div>
@@ -153,7 +241,8 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
                   <label htmlFor="exampleInputContent" className="form-label">Content</label>
                   <textarea className={`form-control ${validationErrors.body ? 'is-invalid' : ''}`} id="exampleInputContent" rows={4}
                     value={body}
-                    onChange={(e) => setBody(e.target.value)}
+                    onChange={handleBodyChange}
+                    onBlur={handleBodyBlur}
                     aria-describedby="contentHelp" />
                   {validationErrors.body && (
                     <div className="invalid-feedback">{validationErrors.body}</div>
@@ -163,7 +252,10 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
                 <div className="mb-3">
                   <label htmlFor="exampleInputTags" className="form-label">Tags</label>
                   <div className={`tags-input-container form-control ${validationErrors.tags ? 'is-invalid' : ''}`}>
-                    <select className="form-select" onChange={handleTagChange} value="">
+                    <select className="form-select"
+                      onChange={handleTagsChange}
+                      onBlur={handleTagsBlur}
+                      value={selectedTag}>
                       <option value="" disabled></option>
                       {availableTags.map((tag, index) => (
                         <option key={index} value={tag}>
@@ -174,7 +266,9 @@ const PostModal: React.FC<PostModalProps> = ({ mode, post, onSave, onClose, isVi
                     <div className="tags-container" ref={tagsContainerRef}
                       id="tags">
                       {tags.map((tag, index) => (
-                        <span key={index} className="input-tag">
+                        <span key={index} className="input-tag"
+                          onClick={() => handleTagRemove(index)}
+                        >
                           {tag}
                         </span>
                       ))}

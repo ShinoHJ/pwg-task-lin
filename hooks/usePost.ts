@@ -70,9 +70,10 @@ export const usePosts = (): PostsContextProps => {
     }
   };
 
-  const removePost = async (userToken: string, postId: number) => {
+  const removePost = async (userToken: string, post: Post) => {
     try {
-      await deletePost(userToken, postId);
+      await deletePost(userToken, post.id);
+      setPosts(currentPosts => currentPosts.filter(p => !(p.id === post.id && p.userId === post.userId)));
     } catch (error) {
       console.error('Failed to delete post:', error);
     }

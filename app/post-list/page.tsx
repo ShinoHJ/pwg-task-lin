@@ -23,11 +23,10 @@ const PostList: React.FC<Post> = ({ }) => {
     showModal: false,
     postId: 0,
   });
-  // const token = localStorage.getItem('token') || '';
   const { token, isAdmin } = useAuth()
-
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  
   useEffect(() => {
-    // const adminToken = localStorage.getItem('token') || '';
     if (isAdmin && token) {
       fetchPostsBasedOnRole(token, currentPage, 10);
     }
@@ -51,6 +50,11 @@ const PostList: React.FC<Post> = ({ }) => {
       showModal: true,
       editingPost: post
     });
+  };
+
+  const handleSelectPost = (post: Post) => {
+    setSelectedPost(post);
+    setDelModalState({ showModal: true, postId: post.id });
   };
 
   const handleCloseModal = () => {
@@ -103,7 +107,7 @@ const PostList: React.FC<Post> = ({ }) => {
               <div className='listArea'>
                 <div className="postTime mb-4 mb-md-5 text-yellow01">{post.date}</div>
                 <h4 className='listTitle'>{post.title}</h4>
-                <p className='listContent'>{post.body}</p>
+                <p className='listContent text-multiline-truncate'>{post.body}</p>
                 <div className='tag'>
                   {post.tags.map((tag, index) => (
                     <button key={index} type="button" className="btn btn-yellow02 rounded-pill px-4">{tag}</button>
@@ -112,7 +116,7 @@ const PostList: React.FC<Post> = ({ }) => {
                 <div className='btn-group mt-4 d-flex justify-content-center'>
                   <button type="button" className="btn btn-green02 rounded-pill w-100" onClick={() => handleEditPost(post)}>Edit</button>
                   <button type="button" className="btn btn-yellow01 rounded-pill w-100" onClick={() => router.push(`/post/${post.id}`)}>View</button>
-                  <button type="button" className="btn btn-red01 rounded-pill w-100" onClick={() => handleRemovePost(post.id)}>Delete</button>
+                  <button type="button" className="btn btn-red01 rounded-pill w-100" onClick={() => handleSelectPost(post)}>Delete</button>
                 </div>
               </div>
             </div>
@@ -136,8 +140,9 @@ const PostList: React.FC<Post> = ({ }) => {
         isVisible={modalState.showModal}
       />
 
+
       <DeleteModal
-        postId={delModalState.postId}
+        post={selectedPost}
         onClose={handleCloseModal}
         isVisible={delModalState.showModal}
         onDeleteSuccess={handleDeleteSuccess}

@@ -3,10 +3,11 @@ import { ReactNode } from "react";
 
 export interface Post {
   id: number;
+  userId?: number;
   title: string;
   body: string;
   tags: string[];
-  date: ReactNode;
+  date: string;
 }
 
 export interface PostData {
@@ -19,7 +20,7 @@ export interface PostsContextProps {
   posts: Post[];
   addPost: (userToken: string, postData: PostData) => Promise<void>;
   updatePost: (userToken: string, postId: number, postData: PostData) => Promise<void>;
-  removePost: (userToken: string, postId: number) => Promise<void>;
+  removePost: (userToken: string, post: Post) => Promise<void>;
   getPost: (userToken: string, postId: number) => Promise<Post | null>;
   totalPages: number;
   fetchPostsBasedOnRole: (token: string, page: number, limit: number) => Promise<void>;
@@ -47,7 +48,7 @@ export interface DashboardProps {
 }
 
 export interface DeleteModalProps {
-  postId: number;
+  post: Post | null;
   isVisible: boolean;
   onClose: () => void;
   onDeleteSuccess: () => void;

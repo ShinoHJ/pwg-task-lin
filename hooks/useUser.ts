@@ -4,6 +4,7 @@ import { User, UserProps } from '@/type'
 
 export const useUser = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
   const login = async (email: string, password: string) => {
     try {
@@ -33,6 +34,7 @@ export const useUser = () => {
         email: response.email,
         password: response.password,
         role: response.role,
+        message: response.message
       };
       setUser(fetchedUser);
       localStorage.setItem('token', fetchedUser.token || '');
