@@ -17,7 +17,7 @@ const RegisterPage: React.FC = () => {
   const router = useRouter()
   const [_, setError] = useState<string | null>(null);
   const { validationErrors, validateForm, handleBlur } = useFormValidation({ username, email, password, role }, true);
-  
+
   const [modalInitializer, setModalInitializer] = useState<((element: HTMLElement) => ModalInstance) | null>(null);
 
   useEffect(() => {
@@ -68,7 +68,8 @@ const RegisterPage: React.FC = () => {
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const isValid = validateForm()
+    const isValid = validateForm(true)
+    console.log('Form validation result:', isValid)
     if (!isValid) {
       return
     }

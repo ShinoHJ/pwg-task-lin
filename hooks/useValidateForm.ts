@@ -8,38 +8,44 @@ const useFormValidation = (
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
-  const validateForm = useCallback(() => {
+  const validateForm = useCallback((isSubmitting: boolean = false) => {
     const errors: ValidationErrors = {};
 
-    if (touchedFields.has('username') && fields.username !== undefined) {
-      if (!fields.username) {
-        errors.username = 'Username is required.';
+    const validateField = (field: string) => {
+      if (isSubmitting || touchedFields.has(field)) {
+        switch (field) {
+          case 'username':
+            if (fields.username === undefined || !fields.username.trim()) {
+              errors.username = 'Username is required.';
+            }
+            break;
+          case 'email':
+            if (!fields.email.trim()) {
+              errors.email = 'Email is required.';
+            } else if (!/^\S+@\S+\.\S+$/.test(fields.email)) {
+              errors.email = 'Email is invalid.';
+            }
+            break;
+          case 'password':
+            if (!fields.password) {
+              errors.password = 'Password is required.';
+            } else if (fields.password.length < 6) {
+              errors.password = 'Password must be at least 6 characters long.';
+            }
+            break;
+          case 'role':
+            if (fields.role === undefined || !fields.role) {
+              errors.role = 'Role is required.';
+            } else if (!['user', 'admin'].includes(fields.role)) {
+              errors.role = 'Role must be "user" or "admin".';
+            }
+            break;
+        }
       }
-    }
+    };
 
-    if (touchedFields.has('email')) {
-      if (!fields.email) {
-        errors.email = 'Email is required.';
-      } else if (!/^\S+@\S+\.\S+$/.test(fields.email)) {
-        errors.email = 'Email is invalid.';
-      }
-    }
-
-    if (touchedFields.has('password')) {
-      if (!fields.password) {
-        errors.password = 'Password is required.';
-      } else if (fields.password.length < 6) {
-        errors.password = 'Password must be at least 6 characters long.';
-      }
-    }
-
-    if (touchedFields.has('role') && fields.role !== undefined) {
-      if (!fields.role) {
-        errors.role = 'Role is required.';
-      } else if (!['user', 'admin'].includes(fields.role)) {
-        errors.role = 'Role must be "user" or "admin".';
-      }
-    }
+    // 驗證所有欄位
+    ['username', 'email', 'password', 'role'].forEach(validateField);
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
