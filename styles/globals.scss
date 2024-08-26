@@ -220,10 +220,64 @@ textarea {
   margin-right: unset;
 }
 
-.tags-input-container .invalid-feedback{
+.tags-input-container .invalid-feedback {
   position: absolute;
   top: 100%;
 }
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  --w: 10ch;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 30px;
+  line-height: 1.2em;
+  letter-spacing: var(--w);
+  width: var(--w);
+  overflow: hidden;
+  white-space: nowrap;
+  color: #0000;
+  animation: l19 2s infinite linear;
+}
+
+.loader:before {
+  content: "Loading...";
+}
+
+
+.pending-status {
+  -webkit-animation: fade-in-fwd 1.8s cubic-bezier(0.390, 0.575, 0.565, 1.000) infinite both;
+  animation: fade-in-fwd 1.8s cubic-bezier(0.390, 0.575, 0.565, 1.000) infinite both;
+}
+
+@-webkit-keyframes fade-in-fwd {
+  0% {
+    -webkit-transform: translateZ(-80px);
+    transform: translateZ(-80px);
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-fwd {
+  0% {
+    -webkit-transform: translateZ(-80px);
+    transform: translateZ(-80px);
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    opacity: 1;
+  }
+}
+
 
 @media screen and (max-width: 680px) {
   .formArea {

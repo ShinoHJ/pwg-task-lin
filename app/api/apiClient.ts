@@ -13,10 +13,16 @@ const apiClient = axios.create({
 export const registerUser = async (userData: { username: string; email: string; password: string; role: string }): Promise<any> => {
   try {
     const response: AxiosResponse<any> = await apiClient.post('/api/account/register', userData);
-
     return response.data;
   } catch (error) {
-    throw error;
+    if (axios.isAxiosError(error)) {
+      throw {
+        status: error.response?.status,
+        data: error.response?.data,
+      };
+    } else {
+      throw error;
+    }
   }
 };
 

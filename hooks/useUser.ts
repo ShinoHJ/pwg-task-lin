@@ -57,8 +57,8 @@ export const useUser = () => {
       };
       setUser(fetchedUser);
       localStorage.setItem('token', fetchedUser.token || '');
-    } catch (error) {
-      console.error('Registration failed:', error);
+    } catch (error: any) {
+      throw error;
     }
   };
 

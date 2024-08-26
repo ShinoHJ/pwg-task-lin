@@ -15,6 +15,7 @@ const LoginPage: React.FC = () => {
   const [_, setError] = useState<string | null>(null);
   const { validationErrors, validateForm, handleBlur } = useFormValidation({ email, password }, false);
   const [modalInitializer, setModalInitializer] = useState<((element: HTMLElement) => ModalInstance) | null>(null);
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     import('bootstrap').then(bootstrap => {
@@ -36,13 +37,11 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const isValid = validateForm(true)
-    // if (!isValid) {
-    //   return
-    // }
+    setIsLoading(true)
+    validateForm(true)
 
     try {
+      setIsLoading(false)
       await login(email, password);
       if (modalInitializer) {
         const element = document.getElementById('successModal') as HTMLElement;
@@ -65,6 +64,7 @@ const LoginPage: React.FC = () => {
           modal.show();
         }
       }
+      setIsLoading(false)
     }
   };
 
@@ -79,7 +79,8 @@ const LoginPage: React.FC = () => {
               <input type="email" className={`form-control rounded-pill ${validationErrors.email ? 'is-invalid' : ''}`} id="pwgInputEmail1"
                 value={email}
                 onChange={handleEmailChange}
-                aria-describedby="emailHelp" />
+                aria-describedby="emailHelp"
+                disabled={isLoading} />
               {validationErrors.email && (
                 <div className="ps-2 invalid-feedback">{validationErrors.email}</div>
               )}
@@ -89,14 +90,19 @@ const LoginPage: React.FC = () => {
               <input type="password" className={`form-control rounded-pill ${validationErrors.password ? 'is-invalid' : ''}`} id="pwgInputPassword1"
                 value={password}
                 onChange={handlePasswordChange}
+                disabled={isLoading}
               />
               {validationErrors.password && (
                 <div className="ps-2 invalid-feedback">{validationErrors.password}</div>
               )}
             </div>
-            <button type="submit" className="btn btn-yellow01 w-100 mt-4 mb-3">Login</button>
+            <button type="submit" className="btn btn-yellow01 w-100 mt-4 mb-3"
+              disabled={isLoading}
+            >Login</button>
+            {isLoading && <p className="pending-status text-center text-red01">Logging in...</p>}
             <div className='text-center'>
-              <Link href="/register" className='text-yellow01 fs-5 text m-auto'>Create an account</Link></div>
+              <Link href="/register" className='text-yellow01 fs-5 text m-auto' style={{ pointerEvents: isLoading ? 'none' : 'auto' }}>Create an account</Link>
+            </div>
           </form>
         </div>
       </div>

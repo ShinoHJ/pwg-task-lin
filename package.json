@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@eslint/config-array": "^0.18.0",
+    "@eslint/object-schema": "^2.1.4",
     "@types/jwt-decode": "^3.1.0",
     "axios": "^1.7.4",
     "bootstrap": "^5.3.3",
