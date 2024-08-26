@@ -13,7 +13,7 @@ import { useAuth } from '@/hooks/useAuth'
 const PostList: React.FC<Post> = ({ }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const { posts, fetchPostsBasedOnRole, removePost, totalPages } = usePosts()
+  const { posts, fetchPostsBasedOnRole, totalPages } = usePosts()
   const [modalState, setModalState] = useState<ModalState>({
     mode: 'add',
     showModal: false,
@@ -72,20 +72,6 @@ const PostList: React.FC<Post> = ({ }) => {
     });
   };
 
-  // const handleRemovePost = async (postId: number) => {
-  //   const userToken = localStorage.getItem('token') || '';
-
-  //   if (!userToken) {
-  //     console.error('User is not authenticated');
-  //     return;
-  //   }
-
-  //   setDelModalState({
-  //     showModal: true,
-  //     postId: postId,
-  //   });
-  // };
-
   const handleSavePost = async () => {
     if (token) {
       await fetchPostsBasedOnRole(token, currentPage, 10);
@@ -115,20 +101,22 @@ const PostList: React.FC<Post> = ({ }) => {
             userToken={token}
             shouldUpdate={updateDashboard}
             onUpdateComplete={() => setUpdateDashboard(false)}
-            statisticsToUpdate={statisticsToUpdate} 
+            statisticsToUpdate={statisticsToUpdate}
           />
         }
-        <div className="row w-100">
+        <div className="article-card row w-100">
           {posts.map(post => (
             <div className="col-12 col-md-6 col-lg-4 mb-4" key={post.id}>
               <div className='listArea'>
-                <div className="postTime mb-4 mb-md-5 text-yellow01">{post.date}</div>
-                <h4 className='listTitle'>{post.title}</h4>
-                <p className='listContent text-multiline-truncate'>{post.body}</p>
-                <div className='tag'>
-                  {post.tags.map((tag, index) => (
-                    <button key={index} type="button" className="btn btn-yellow02 rounded-pill px-4">{tag}</button>
-                  ))}
+                <div className="row">
+                  <div className="postTime mb-4 mb-md-5 text-yellow01">{post.date}</div>
+                  <h4 className='listTitle'>{post.title}</h4>
+                  <p className='listContent text-multiline-truncate'>{post.body}</p>
+                  <div className='tag tag-multiline-truncate'>
+                    {post.tags.map((tag, index) => (
+                      <button key={index} type="button" className="btn btn-yellow02 rounded-pill px-3 px-md-4">{tag}</button>
+                    ))}
+                  </div>
                 </div>
                 <div className='btn-group mt-4 d-flex justify-content-center'>
                   <button type="button" className="btn btn-green02 rounded-pill w-100" onClick={() => handleEditPost(post)}>Edit</button>

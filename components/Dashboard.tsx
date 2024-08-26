@@ -33,13 +33,13 @@ const Dashboard: React.FC<DashboardProps> = ({ adminToken, userToken, shouldUpda
             <div className="row w-100" >
               <div className="col-4 mb-4">
                 <div className='infoArea bg-yellow02'>
-                  <h3 className='infoTitle text-center'>Total Account</h3>
+                  <h3 className='infoTitle text-center'>Total <br className='d-md-none'/>Account</h3>
                   <p className='infoContent text-center mb-0'>{statistics.totalAccounts}</p>
                 </div>
               </div>
               <div className="col-4 mb-4">
                 <div className='infoArea bg-red02'>
-                  <h3 className='infoTitle text-center'>Total Post</h3>
+                  <h3 className='infoTitle text-center'>Total <br className='d-md-none'/>Post</h3>
                   <p className='infoContent text-center mb-0'>{statistics.totalPosts}</p>
                 </div>
               </div>

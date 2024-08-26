@@ -26,9 +26,10 @@ const ViewPostPage: React.FC<Params> = ({ params }) => {
         console.error('No token available');
       }
     };
-
-    fetchPost();
-  }, [id, getPost]);
+    if (token) {
+      fetchPost();
+    }
+  }, [id, token]);
 
   return (
     <>
@@ -42,7 +43,7 @@ const ViewPostPage: React.FC<Params> = ({ params }) => {
 
             <div className='tag mt-5'>
               {post.tags.map((tag, index) => (
-                <button key={index} type="button" className="btn btn-yellow02 rounded-pill px-4">{tag}</button>
+                <button key={index} type="button" className="btn btn-yellow02 rounded-pill px-3 px-md-4">{tag}</button>
               ))}
             </div>
           </div>

@@ -99,6 +99,7 @@ textarea {
 .articleArea .tag button,
 .article .btn-group button {
   margin-right: 5px;
+  margin-bottom: 7px;
 }
 
 .tag button:nth-last-child(1),
@@ -106,10 +107,23 @@ textarea {
   margin-right: unset;
 }
 
+
+.list-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
 .listArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 300px;
+  height: 100%;
+  border: 1px solid #ddd;
+  border-radius: var(--bs-border-radius);
   background: var(--bs-white);
   padding: 25px;
-  border-radius: var(--bs-border-radius);
   position: relative;
 }
 
@@ -138,13 +152,22 @@ textarea {
   text-overflow: ellipsis;
 }
 
-.text-multiline-truncate {
+.text-multiline-truncate,
+.tag-multiline-truncate {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.text-multiline-truncate {
+  -webkit-line-clamp: 2;
+}
+
+.tag-multiline-truncate {
+  -webkit-line-clamp: 1;
+}
+
 
 .listArea .tag button,
 .btn-group button {
